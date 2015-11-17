@@ -6,6 +6,16 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.css">
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
     <script type="text/javascript" src="async.js"></script>
+    <style type="text/css">
+        .mixpanel-platform-chart-table .mp_chart_row {
+            display: block;
+            width: 700px;
+            min-width: 700px;
+        }
+        .mixpanel-platform-chart-table .mp_chart_row .mp_chart_cell {
+            width: 200px;
+        }
+    </style>
   </head>
   <body class="mixpanel-platform-body">
     
@@ -22,6 +32,7 @@
           <div class="mp_chart_header mp_chart_row">
               <div class="mp_chart_cell">Finnkode</div>
               <div class="mp_chart_cell">Antall views</div>
+              <div class="mp_chart_cell">Link</div>
           </div>    
       </div>
       
@@ -55,7 +66,8 @@
                     
                     result.push({
                         finnkode: finnkode[1],
-                        sum: sum
+                        sum: sum,
+                        link: 'profil.nabolag.no/'+finnkode[1]
                     });
                 }
             }
@@ -66,7 +78,8 @@
             
             result.unshift({
                 finnkode: 'total',
-                sum: total
+                sum: total,
+                link: 'profil.nabolag.no/'
             });
             
             console.log(result.length);
@@ -82,7 +95,11 @@
             var resultList = $('#results');
             var string = '';
             result.forEach(function (obj){
-                string += '<div class="mp_chart_row"><div class="mp_chart_cell">' + obj.finnkode + '</div><div class="mp_chart_cell">' + obj.sum + '</div></div>';
+                string += '<div class="mp_chart_row">' +
+                    '<div class="mp_chart_cell">' + obj.finnkode + '</div>' +
+                    '<div class="mp_chart_cell">' + obj.sum + '</div>' +
+                    '<div class="mp_chart_cell"><a href="http://' + obj.link+ '">' + obj.link + '</a></div>' +
+                '</div>';
             });
             resultList.append(string);
             
