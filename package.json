@@ -1,0 +1,24 @@
+{
+  "name": "MixPanel",
+  "version": "1.0.0",
+  "description": "Custom report from MixPanel",
+  "main": "async.js",
+  "dependencies": {
+    "async": "^1.5.0",
+    "bower": "^1.6.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mixpanel-platform/mixpanel-digital-profil-689519-K3JiLJq.git"
+  },
+  "author": "Halvor M. Kvalbein / Eiendomsprofil AS",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mixpanel-platform/mixpanel-digital-profil-689519-K3JiLJq/issues"
+  },
+  "homepage": "https://github.com/mixpanel-platform/mixpanel-digital-profil-689519-K3JiLJq"
+}

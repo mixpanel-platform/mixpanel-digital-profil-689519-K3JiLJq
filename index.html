@@ -5,46 +5,90 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/css/reset.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.css">
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
+    <script type="text/javascript" src="async.js"></script>
   </head>
   <body class="mixpanel-platform-body">
-    <div class="mixpanel-platform-section">
-      <div id="eventSelect" style="float: left;"></div>
-      <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
-      <div id="propSelect" style="float: left;"></div>
-      <div id="dateSelect" style="float: right;"></div>
+    
+      <div class="mixpanel-platform-section">
+        <p style="float:left">Antall <u>views</u> etter Finnkode (orderLineId er utelatt)</p>
+        <p id="date" style="float:right"></p>
       <div style="clear: both;"></div>
-      <div id="graph"></div>
     </div>
-    <div id="table"></div>
+    
+      <div id="graph"></div>
+      <div id="table"></div>
+      
+      <div id="results" class="mixpanel-platform-chart-table">
+          <div class="mp_chart_header mp_chart_row">
+              <div class="mp_chart_cell">Finnkode</div>
+              <div class="mp_chart_cell">Antall views</div>
+          </div>    
+      </div>
+      
     <script>
-      var eventSelect = $('#eventSelect').MPEventSelect();
-      var propSelect  = $('#propSelect').MPPropertySelect();
-      var dateSelect  = $('#dateSelect').MPDatepicker();
-      var eventGraph  = $('#graph').MPChart({chartType: 'line'});
-      var eventTable  = $('#table').MPTable({
-        showPercentages: true,
-        firstColHeader: 'Event'
-      });
-
-      var runQuery = function() {
-        var eventName = eventSelect.MPEventSelect('value'),
-            propName  = propSelect.MPPropertySelect('value'),
-            dateRange = dateSelect.MPDatepicker('value');
-
-        if (eventName) {
-          MP.api.segment(eventName, propName, dateRange).done(function(results) {
-            eventGraph.MPChart('setData', results);
-            eventTable.MPTable('setData', results);
-          });
-        }
-      };
-      eventSelect.on('change', function(e, eventName) {
-        propSelect.MPPropertySelect('setEvent', eventName);
-        $("#by").show();
-        runQuery();
-      });
-      propSelect.on('change', runQuery);
-      dateSelect.on('change', runQuery);
+        var params = {
+            from: new Date('2015-09-01T00:00:00'),
+            to: new Date(),
+            limit: 10000
+        };
+        
+        $('#date').html(params.from.toLocaleDateString() + ' – ' + params.to.toLocaleDateString());
+        
+        // MP.api.segment(event, [property], [params], [settings|callback])
+        MP.api.segment('Page Viewed', '$current_url', params).done(function(results){
+            
+            var result = [];
+            
+            var finnkode, total = 0;
+            
+            for (var profile in results.json){
+                
+                finnkode = profile.match(/profil.nabolag.no\/(\d+)/);    
+                if (finnkode && finnkode[1].length == 8){
+                    
+                    var sum = 0;
+                    for (var item in profile){
+                        sum += parseInt(item);
+                    }
+                    
+                    total += sum;
+                    
+                    result.push({
+                        finnkode: finnkode[1],
+                        sum: sum
+                    });
+                }
+            }
+            
+            result.sort(function(a, b){
+                return b.sum - a.sum;
+            });
+            
+            result.unshift({
+                finnkode: 'total',
+                sum: total
+            });
+            
+            console.log(result.length);
+            
+            
+            /* MPTable will only show 100 elements. Write the DOM self instead!
+            $('#table').MPTable({
+                data: result,
+                showPercentages: false, 
+            });
+            /**/
+        
+            var resultList = $('#results');
+            var string = '';
+            result.forEach(function (obj){
+                string += '<div class="mp_chart_row"><div class="mp_chart_cell">' + obj.finnkode + '</div><div class="mp_chart_cell">' + obj.sum + '</div></div>';
+            });
+            resultList.append(string);
+            
+        });
+    
+      
     </script>
   </body>
 </html>
