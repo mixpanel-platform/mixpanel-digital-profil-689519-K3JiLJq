@@ -79,7 +79,15 @@
             result.unshift({
                 finnkode: 'total',
                 sum: total,
-                link: 'profil.nabolag.no/'
+                link: ''
+            }, {
+                finnkode: '# finnkodes',
+                sum: result.length,
+                link: ''
+            }, {
+                finnkode: 'snitt',
+                sum: total / result.length,
+                link: ''
             });
             
             console.log(result.length);
