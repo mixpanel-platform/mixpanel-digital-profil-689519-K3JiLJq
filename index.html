@@ -58,8 +58,8 @@
                 if (finnkode && finnkode[1].length == 8){
                     
                     var sum = 0;
-                    for (var item in profile){
-                        sum += parseInt(item);
+                    for (var item in results.json[profile]){
+                        sum += parseInt(results.json[profile][item]);
                     }
                     
                     total += sum;
@@ -85,7 +85,7 @@
             console.log(result.length);
             
             
-            /* MPTable will only show 100 elements. Write the DOM self instead!
+            /* MPTable will only show 100 elements. Write the DOM self instead! 
             $('#table').MPTable({
                 data: result,
                 showPercentages: false, 
