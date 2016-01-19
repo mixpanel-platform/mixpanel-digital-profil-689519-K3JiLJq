@@ -38,7 +38,7 @@
       
     <script>
         var params = {
-            from: new Date('2015-09-01T00:00:00'),
+            from: new Date('2016-01-04T00:00:00'),
             to: new Date(),
             limit: 10000
         };
@@ -48,13 +48,14 @@
         // MP.api.segment(event, [property], [params], [settings|callback])
         MP.api.segment('Page Viewed', '$current_url', params).done(function(results){
             
-            var result = [];
-            
+            var finnkodes = {};
             var finnkode, total = 0;
+            var result = [];
             
             for (var profile in results.json){
                 
                 finnkode = profile.match(/profil.nabolag.no\/(\d+)/);    
+                
                 if (finnkode && finnkode[1].length == 8){
                     
                     var sum = 0;
@@ -62,14 +63,20 @@
                         sum += parseInt(results.json[profile][item]);
                     }
                     
-                    total += sum;
+                    if (finnkodes[finnkode[1]] != undefined)
+                      sum += finnkodes[finnkode[1]].sum;
                     
-                    result.push({
+                    finnkodes[finnkode[1]] = {
                         finnkode: finnkode[1],
                         sum: sum,
                         link: 'profil.nabolag.no/'+finnkode[1]
-                    });
+                    };
                 }
+            }
+            
+            for (var res in finnkodes){
+              total += finnkodes[res].sum;
+              result.push(finnkodes[res]);
             }
             
             result.sort(function(a, b){
